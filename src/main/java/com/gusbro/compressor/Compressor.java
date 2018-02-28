@@ -10,11 +10,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.zip.DeflaterInputStream;
 
 /**
  *
@@ -336,7 +334,6 @@ public class Compressor
                     String subName = getSubName(file);
                     
                     System.out.println(String.format("ThreadId: %d FileToCompress: %s", id, subName));
-
 
                     // Send item type, name and attributes
                     buffer[0] = (byte)((file.isDirectory() ? Constants.FOLDER_MARKER : Constants.FILE_MARKER) | 

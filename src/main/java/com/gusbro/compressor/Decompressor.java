@@ -9,8 +9,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.zip.InflaterOutputStream;
 
 /**
  *
@@ -115,7 +117,6 @@ public class Decompressor implements IOneToMultiProcessor
                         output = null;
                     }
                     String subName = new String(buffer, 1, size - 1, StandardCharsets.UTF_8);
-                    System.out.println(String.format("FileToDecompress: %s", subName));
                     file = new File(destPath, subName);
 
                     boolean canRead = (buffer[0] & Constants.MARKER_CAN_READ) != 0;
@@ -127,7 +128,7 @@ public class Decompressor implements IOneToMultiProcessor
                     }else
                     { // It's a file
                         file.getParentFile().mkdirs();
-                        output = new BufferedOutputStream(new FileOutputStream(file));
+                        output = new BufferedOutputStream(getCompressorStream(new FileOutputStream(file)));
                     }
                     file.setReadable(canRead);
                     file.setWritable(canWrite);
@@ -156,4 +157,12 @@ public class Decompressor implements IOneToMultiProcessor
         }
         
     }
+    
+        // This method is the entry point to change the compression algorithm
+        // See also getCompressorStream from Compressor
+        protected OutputStream getCompressorStream(OutputStream outputStream)
+        {
+            return new InflaterOutputStream(outputStream);
+        }
+    
 }
